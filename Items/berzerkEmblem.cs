@@ -11,12 +11,13 @@ namespace OP_Accessories.Sprites
 {
     public class berzerkEmblem : ModItem
     {
-        public float dmgIncrease = 0.40f;
+        public float dmgIncrease = 2f;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Berzerk Emblem");
-            Tooltip.SetDefault("Inceases Dmg by 40% but massivly decreases your defense \n" +
-                "Only workes if your hp is lower then 60%");
+            Tooltip.SetDefault("Inceases Dmg by 200% but massivly decreases your defense \n" +
+                "Only workes if your hp is lower then 60% \n" +
+                "Boosts movement speed and item usage speed");
         }
         public override void SetDefaults()
         {
@@ -28,7 +29,7 @@ namespace OP_Accessories.Sprites
         }
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            if (player.statLifeMax2 < player.statLifeMax2 * 0.61) {
+            if (player.statLife < player.statLifeMax * 0.7) {
                 if (player.statDefense > 35)
                 {
                     player.statDefense -= ((player.statDefense * 40) / 100) + 30;
@@ -49,7 +50,7 @@ namespace OP_Accessories.Sprites
                 player.toolTime += (player.toolTime * 60) / 100;
                 player.meleeSpeed += player.meleeSpeed * .30f;
 
-                player.AddBuff(mod.BuffType("Berzerk"), 600, false);
+                player.AddBuff(mod.BuffType("Berzerk"), 60, false);
             }
         }
         
@@ -67,5 +68,4 @@ namespace OP_Accessories.Sprites
             canBeCleared = false;
         }
     }
-
 }

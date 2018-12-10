@@ -13,7 +13,7 @@ namespace OP_Accessories.Sprites
 
     public class defenderEmblem : ModItem
     {
-        public static bool active = false;
+        public static bool equipped = false;
         public static int PlayerHPbase;
         public static int PlayerHP2base;
         public static int PlayerHP;
@@ -24,7 +24,8 @@ namespace OP_Accessories.Sprites
             DisplayName.SetDefault("Defender Emblem");
             Tooltip.SetDefault("Doubles Armor! increases HP by 30%\n" +
                 "but decreases potion healing by 50% \n" +
-                "Increases immune time and grants immunity to broken armor");
+                "Increases immune time and grants immunity to broken armor ,knockback\n" +
+                "and protects you from taking huge damage");
         }
         public override void SetDefaults()
         {
@@ -38,22 +39,19 @@ namespace OP_Accessories.Sprites
         public override void UpdateAccessory(Player player, bool hideVisual)
 
         {
-            active = true;
+            equipped = true;
             
             if (player.statDefense > 1)
             {
                 player.statDefense *= 2;
             }
-                player.AddBuff(mod.BuffType("WarBuff"), 600, false);
                 player.AddBuff(mod.BuffType("Armor"), 600, false);
                 player.longInvince = true;
                 player.buffImmune[BuffID.BrokenArmor] = true;
-
-            player.noFallDmg = true;
-            player.noKnockback = true;
+                player.noKnockback = true;
             if (player.statLifeMax > 100)
             {
-                player.statLifeMax2 = (player.statLifeMax * 150) / 100;
+                player.statLifeMax2 = (player.statLifeMax * 130) / 100;
 
             }
             else
@@ -74,7 +72,7 @@ namespace OP_Accessories.Sprites
             public override void SetDefaults()
             {
                 DisplayName.SetDefault("Warmog's Heart");
-                Description.SetDefault("Massive HP regen while not in combat");
+                Description.SetDefault("Rapid HP regen while not in combat");
                 Main.buffNoSave[Type] = true;
                 Main.debuff[Type] = false;
                 canBeCleared = false;
@@ -88,8 +86,7 @@ namespace OP_Accessories.Sprites
 
             public override void SetDefaults()
             {
-                DisplayName.SetDefault("Blessing of." +
-                    " nature");
+                DisplayName.SetDefault("Blessing of nature");
                 Description.SetDefault("Grants immunity to broken armor and Doubles current defense");
                 Main.buffNoSave[Type] = true;
                 Main.debuff[Type] = false;
@@ -102,10 +99,10 @@ namespace OP_Accessories.Sprites
 
             public override void SetDefaults()
             {
-                DisplayName.SetDefault("Warmog's curse is upon you");
-                Description.SetDefault("you have caused pain to his heart");
+                DisplayName.SetDefault("You have been cursed");
+                Description.SetDefault("you have lost the power to regenerate");
                 Main.buffNoSave[Type] = true;
-                Main.debuff[Type] = true;
+                Main.debuff[Type] = false;
                 canBeCleared = false;
             }
 
@@ -118,38 +115,65 @@ namespace OP_Accessories.Sprites
 
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
-            if (defenderEmblem.active)
+            if (defenderEmblem.equipped)
             {
-                {
-                    if (Main.rand.NextFloat(0, 100) > 70 && !hurt)
-                    {
 
-                        return false;
-                    }
-                    else
-                    {
-                        player.AddBuff(mod.BuffType("Cooldown"), 600, false);
-                        player.ClearBuff(mod.BuffType("WarBuff"));
-                        hurt = true;
-                        i = 0;
-                        return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
-                    }
-                }
+                player.AddBuff(mod.BuffType("Cooldown"), 600, false);
+                player.ClearBuff(mod.BuffType("WarBuff"));
+                i = 0;
+                hurt = true;
+                player.immune = true;
+                player.immuneTime = 80;
+                base.PostHurt(pvp, quiet, damage, hitDirection, crit);
+                if (damage >= 180) {
+
+                    customDamage = true;
+                damage = 180; } 
+                        return true;
+                    
+                
             }
-     return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
-                   
+            return true; 
         }
         public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
         {
 
-            if (defenderEmblem.active)
+            if (defenderEmblem.equipped)
             {
-
+                player.AddBuff(mod.BuffType("Cooldown"), 600, false);
+                player.ClearBuff(mod.BuffType("WarBuff"));
+                i = 0;
+                hurt = true;
                 player.immune = true;
                 player.immuneTime = 80;
                 base.PostHurt(pvp, quiet, damage, hitDirection, crit);
             }
         }
+        public virtual void OnHitNPC(Player player, NPC target, int damage, float knockback, bool crit)
+        {
+            if (defenderEmblem.equipped)
+            {
+                player.AddBuff(mod.BuffType("Cooldown"), 300, false);
+                player.ClearBuff(mod.BuffType("WarBuff"));
+                hurt = true;
+                i = 250;
+            }
+
+        }
+
+        public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
+        {
+            if (defenderEmblem.equipped)
+            {
+                player.AddBuff(mod.BuffType("Cooldown"), 300, false);
+                player.ClearBuff(mod.BuffType("WarBuff"));
+                hurt = true;
+                i = 250;
+            }
+        }
+
+
+
 
         public override void ResetEffects()
         {
@@ -163,21 +187,27 @@ namespace OP_Accessories.Sprites
 
         private void ResetVariables()
         {
-            defenderEmblem.active = false;
+            defenderEmblem.equipped = false;
         }
 
         public virtual void GetHealLife(Item item, bool quickHeal, ref int healValue)
             {
-            if (defenderEmblem.active)
+            if (defenderEmblem.equipped)
             {
-                healValue -= (healValue * 20) / 100;
+                healValue -= healValue / 2;
             }
             }
 
         public override void PostUpdate()
         {
-            if (defenderEmblem.active)
+            if (defenderEmblem.equipped)
             {
+                if(player.breath == 0)
+                {
+                    hurt = true;
+                    player.AddBuff(mod.BuffType("Cooldown"), 300, false);
+                    player.ClearBuff(mod.BuffType("WarBuff"));
+                }
                 if (hurt)
                 {
                     player.lifeRegen = 0;
@@ -194,17 +224,33 @@ namespace OP_Accessories.Sprites
                 }
                 else
                 {
-                    if (player.statLife < player.statLifeMax2-1)
+                    player.AddBuff(mod.BuffType("WarBuff"), 600, false);
+                    if (player.statLife < player.statLifeMax2)
                     {
-                        player.statLife += 2;
-                        player.HealEffect(2);
+                        i++;
+                        if (i > 30) { 
+                        int heal = (player.statLife * 15)/100;
+                            if (heal < 5)
+                            {
+                                heal = 5;
+                            }
+                            else if (heal > 20)
+                            {
+                                heal = 20;
+                            }
+                            player.statLife += heal;
+                        player.HealEffect(heal);
+                        i = 0;
+                    }
                     }
                 }
             }
         }
         }
 
-    }
+ 
+
+}
 
 
 

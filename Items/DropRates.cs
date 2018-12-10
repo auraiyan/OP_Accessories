@@ -1,105 +1,138 @@
-﻿//using System;
-//using Terraria;
-//using Terraria.ID;
-//using Terraria.ModLoader;
-//namespace OP_Accessories.Sprites
-//{
-//    public class DropRates : ModNPC
-//    {
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
-//        public override void NPCLoot()
-//        {
-                    
-            
+namespace OP_Accessories.Sprites
+{
+    public class DropRates : GlobalItem
+    {
 
-//            if (npc.type == 35)//Skeletron expert
-//            {
+        public override void OpenVanillaBag(string context, Player player, int arg)
+        {
+            if (context == "bossBag" /* && arg == ItemID.FishronBossBag*/)
+            {
+                
 
-//                if (Main.expertMode)
-//                {
-//                    Item.NewItem(npc.getRect(), mod.ItemType("sniperEmblem"));
-//                }
-//            }
+                int caseSwitch = Main.rand.Next(1,15);
 
-//            if (npc.type == 113 && !Main.expertMode)//Wall of flesh
-//            {
+                switch (caseSwitch)
+                {
+                    case 1:
 
-//                if (Main.rand.Next(2) == 0 )
-//                {
-//                    Item.NewItem(npc.getRect(), mod.ItemType("sniperEmblem"));
-//                }
-//            }
-//            if (npc.type == 113 && Main.expertMode) //Wall of flesh expert
-//            {
+                        player.QuickSpawnItem(mod.ItemType("sniperEmblem"));
+                        break;
+                    case 2:
 
-//                if (Main.rand.Next(2) == 0)
-//                {
-//                    Item.NewItem(npc.getRect(), mod.ItemType("berzerkEmblem"));
-//                }
-//            }if (npc.type == 126 && Main.expertMode) //Spazmatism
-//            {
+                        player.QuickSpawnItem(mod.ItemType("berzerkEmblem"));
+                        break;
+                    case 3:
 
-//                if (Main.rand.Next(2) == 0 )
-//                {
-//                    Item.NewItem(npc.getRect(), mod.ItemType("defenderEmblem"));
-//                }
-//            }if (npc.type == 126 && Main.expertMode) //Spazmatism expert
-//            {
+                        player.QuickSpawnItem(mod.ItemType("defenderEmblem"));
+                        break;
+                    case 4:
 
-//                if (Main.rand.Next(2) == 0)
-//                {
-//                    Item.NewItem(npc.getRect(), mod.ItemType("rageEmblem"));
-//                }
-//            }if (npc.type == 127 && !Main.expertMode) //Skeletron Prime
-//            {
+                        player.QuickSpawnItem(mod.ItemType("rageEmblem"));
+                        break;
+                    case 5:
 
-//                if (Main.rand.Next(2) == 0)
-//                {
-//                    Item.NewItem(npc.getRect(), mod.ItemType("rageEmblem"));
-//                }
+                        player.QuickSpawnItem(mod.ItemType("speedEmblem"));
+                        break;
+                    case 6:
 
-//            }
-//            if (npc.type == 127 && Main.expertMode) //Skeletron Prime expert
-//            {
+                        player.QuickSpawnItem(mod.ItemType("lifeStealEmblem"));
+                        break;
 
-//                if (Main.rand.Next(2) == 0)
-//                {
-//                    Item.NewItem(npc.getRect(), mod.ItemType("speedEmblem"));
-//                }
-//            }
-//            if (npc.type == 262 && !Main.expertMode) //Plantara
-//            {
+                    default:
 
-//                if (Main.rand.Next(2) == 0)
-//                {
-//                    Item.NewItem(npc.getRect(), mod.ItemType("speedEmblem"));
-//                }
-//            }
-            
-//            if (npc.type == 262 && Main.expertMode) //Plantara expert
-//            {
+                        break;
+                }
+            }
 
-//                if (Main.rand.Next(2) == 0)
-//                {
-//                    Item.NewItem(npc.getRect(), mod.ItemType("defenderEmblem"));
-//                }
-//            }
-//            if (npc.type == 327 && !Main.expertMode) //Pumpking
-//            {
+            //if (npc.type == NPCID.WallofFlesh && !Main.expertMode)//Wall of flesh
+            //{
 
-//                if (Main.rand.Next(2) == 0)
-//                {
-//                    Item.NewItem(npc.getRect(), mod.ItemType("berzerkEmblem"));
-//                }
-//            }
-            
+            //    if (Main.rand.Next(2) == 0)
+            //    {
+            //        Item.NewItem(npc.getRect(), mod.ItemType("sniperEmblem"));
+            //    }
+            //}
+            //if (npc.type == NPCID.WallofFlesh && Main.expertMode) //Wall of flesh expert
+            //{
+
+            //    if (Main.rand.Next(2) == 0)
+            //    {
+            //        Item.NewItem(npc.getRect(), mod.ItemType("berzerkEmblem"));
+            //    }
+            //}
+            //if (npc.type == NPCID.Spazmatism && Main.expertMode) //Spazmatism
+            //{
+
+            //    if (Main.rand.Next(2) == 0)
+            //    {
+            //        Item.NewItem(npc.getRect(), mod.ItemType("defenderEmblem"));
+            //    }
+            //}
+            //if (npc.type == NPCID.Spazmatism && Main.expertMode) //Spazmatism expert
+            //{
+
+            //    if (Main.rand.Next(2) == 0)
+            //    {
+            //        Item.NewItem(npc.getRect(), mod.ItemType("rageEmblem"));
+            //    }
+            //}
+            //if (npc.type == NPCID.SkeletronPrime && !Main.expertMode) //Skeletron Prime
+            //{
+
+            //    if (Main.rand.Next(2) == 0)
+            //    {
+            //        Item.NewItem(npc.getRect(), mod.ItemType("rageEmblem"));
+            //    }
+
+            //}
+            //if (npc.type == NPCID.SkeletronPrime && Main.expertMode) //Skeletron Prime expert
+            //{
+
+            //    if (Main.rand.Next(2) == 0)
+            //    {
+            //        Item.NewItem(npc.getRect(), mod.ItemType("speedEmblem"));
+            //    }
+            //}
+            //if (npc.type == NPCID.Plantera && !Main.expertMode) //Plantara
+            //{
+
+            //    if (Main.rand.Next(2) == 0)
+            //    {
+            //        Item.NewItem(npc.getRect(), mod.ItemType("speedEmblem"));
+            //    }
+            //}
+
+            //if (npc.type == NPCID.Plantera && Main.expertMode) //Plantara expert
+            //{
+
+            //    if (Main.rand.Next(2) == 0)
+            //    {
+            //        Item.NewItem(npc.getRect(), mod.ItemType("defenderEmblem"));
+            //    }
+            //}
+            //if (npc.type == NPCID.Pumpking && !Main.expertMode) //Pumpking
+            //{
+
+            //    if (Main.rand.Next(2) == 0)
+            //    {
+            //        Item.NewItem(npc.getRect(), mod.ItemType("berzerkEmblem"));
+            //    }
+            //}
 
 
 
 
 
 
-
-//        }
-//    }
-//}
+        }
+    }
+}
